@@ -1,0 +1,65 @@
+version: '3'
+name: alertiv
+services:
+  nginx:
+    restart: always
+    image: registry.somepath/nursecall/alertiv:rcare-integration-nginx-latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/usr/share/nginx/html/
+    networks:
+      - internal
+  php:
+    image: registry.somepath/nursecall/alertiv:rcare-integration-latest
+    restart: always
+    volumes:
+      - /opt/alertiv/logs:/var/www/html/logs
+      - ./src:/usr/share/nginx/html/
+    environment:
+      # LOGGING
+      # Verbosity levels: info, error
+      - LOG_VERBOSITY=error
+      - LOG_LOCATION=logs/
+
+      # DB_SERVER
+      - DB_SERVER=sql
+      - DB_PASSWORD=MSSQL_SA_PASSWORD
+      - DB_DATABASE=Alertiv
+
+      # RCARE API
+      - RCARE_API_SERVER=10.1.10.206
+      - RCARE_API_USER=Admin
+      - RCARE_API_PASSWORD=Password
+
+      # OPTIONS
+      # TIMEZONE, use https://www.php.net/manual/en/timezones.america.php
+      - TIMEZONE=America/New_York
+      - CANCELED_STRING=Canceled
+      - ALARM_STRING=Staff Assist
+    networks:
+      - internal
+  sql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: always
+    ports:
+      - "1433:1433"
+    networks:
+      - internal
+    volumes:
+      - /opt/alertiv/mssql:/var/opt/mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=MSSQL_SA_PASSWORD
+      - MSSQL_PID=Express
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.255.0.0/16
+          ip_range: 10.255.255.0/24
+          gateway: 10.255.255.254

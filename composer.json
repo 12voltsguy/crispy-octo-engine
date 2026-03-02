@@ -1,0 +1,13 @@
+{
+    "name": "sagetechs/alertiv",
+    "type": "project",
+    "license": "All Rights Reserved",
+    "autoload": {
+        "psr-4": {
+            "Sagetechs\\Alertiv\\": "src/"
+        }
+    },
+    "require": {
+        "cartalyst/sentinel": "^6.0"
+    }
+}
