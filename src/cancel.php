@@ -6,7 +6,7 @@ $config = include 'config/config.php';
 $type = 3; //This value indicates the alarm type from the API guide. 3 = clear
 $device = 0; //This value indicates the device_id of the Rcare device. 0 = no station
 $serverName = "192.168.50.182";
-$connectionInfo = array( "Database"=>"r5000", "UID"=>"r5kAdmin", "PWD"=>"Passw0rd","TrustServerCertificate"=>true);
+$connectionInfo = array( "Database"=>"r5000", "UID"=>"r5kAdmin", "PWD"=>"YourPassword","TrustServerCertificate"=>true);
 $conn = sqlsrv_connect( $serverName, $connectionInfo );
 if( $conn === false ) {
     die( print_r( sqlsrv_errors(), true));
